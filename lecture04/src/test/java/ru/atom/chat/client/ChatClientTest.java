@@ -17,6 +17,7 @@ import java.io.IOException;
 public class ChatClientTest {
     private static String MY_NAME_IN_CHAT = "I_AM_STUPID";
     private static String MY_MESSAGE_TO_CHAT = "SOMEONE_KILL_ME";
+    private static String MY_FALSE_NAME_IN_CHAT = "IAMSTUPID";
 
     @Test
     public void login() throws IOException {
@@ -46,9 +47,50 @@ public class ChatClientTest {
 
     @Test
     public void say() throws IOException {
+        ChatClient.login(MY_NAME_IN_CHAT);
         Response response = ChatClient.say(MY_NAME_IN_CHAT, MY_MESSAGE_TO_CHAT);
         System.out.println("[" + response + "]");
         System.out.println(response.body().string());
         Assert.assertEquals(200, response.code());
+    }
+
+    @Test
+    public void logout() throws IOException {
+        ChatClient.login(MY_NAME_IN_CHAT);
+        Response response = ChatClient.logout(MY_NAME_IN_CHAT);
+        System.out.println("[" + response + "]");
+        Assert.assertTrue(response.code() == 200);
+    }
+
+    @Test
+    public void logout1() throws IOException {
+        ChatClient.logout(MY_FALSE_NAME_IN_CHAT);
+        Response response = ChatClient.logout(MY_FALSE_NAME_IN_CHAT);
+        System.out.println("[" + response + "]");
+        Assert.assertTrue(response.code() == 400);
+    }
+
+    @Test
+    public void messagesCount() throws IOException {
+        Response response = ChatClient.viewMessagesCount();
+        System.out.println("[" + response + "]");
+        System.out.println(response.body().string());
+        Assert.assertEquals(200, response.code());
+    }
+
+    @Test
+    public void rename() throws IOException {
+        ChatClient.login(MY_NAME_IN_CHAT);
+        Response response = ChatClient.rename(MY_NAME_IN_CHAT, MY_FALSE_NAME_IN_CHAT);
+        System.out.println("[" + response + "]");
+        Assert.assertTrue(response.code() == 200);
+    }
+
+    @Test
+    public void clear() throws IOException {
+        ChatClient.login(MY_NAME_IN_CHAT);
+        Response response = ChatClient.clear(MY_NAME_IN_CHAT);
+        System.out.println("[" + response + "]");
+        Assert.assertTrue(response.code() == 200);
     }
 }
